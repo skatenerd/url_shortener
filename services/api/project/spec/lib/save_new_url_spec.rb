@@ -8,27 +8,27 @@ describe SaveNewUrl do
 
   it "saves a url" do
     expect {
-      SaveNewUrl.new.save("yes.com")
+      SaveNewUrl.new("http://yes.com").save
     }.to change {
     Connection::DB[:short_urls].count
     }.from(0).to(1)
 
     saved = Connection::DB[:short_urls].order(:id).last
-    expect(saved[:destination]).to eql("yes.com")
+    expect(saved[:destination]).to eql("http://yes.com")
   end
 
   it "does nothing if the url has already been saved" do
-    SaveNewUrl.new.save("yes.com")
+    SaveNewUrl.new("yes.com").save
     expect {
-      SaveNewUrl.new.save("yes.com")
+      SaveNewUrl.new("yes.com").save
     }.not_to change {
       Connection::DB[:short_urls].count
     }
   end
 
   it "returns a usable slug" do
-    slug = SaveNewUrl.new.save("yes.com")
-    expect(Connection::DB[:short_urls].first(slug: slug)[:destination]).to eql("yes.com")
+    slug = SaveNewUrl.new("http://yes.com").save
+    expect(Connection::DB[:short_urls].first(slug: slug)[:destination]).to eql("http://yes.com")
   end
 
   it "retries on slug collision" do
@@ -36,13 +36,18 @@ describe SaveNewUrl do
     slug_generator = double(:slug_generator)
     expect(slug_generator).to receive(:for_record_count).and_return("crash", "crash", "crash", "win")
 
-    SaveNewUrl.new(slug_generator).save("yes.com")
+    SaveNewUrl.new("yes.com", slug_generator).save
   end
 
 
   it "returns a usable slug on URL collision" do
-    first_slug = SaveNewUrl.new.save("yes.com")
-    second_slug = SaveNewUrl.new.save("yes.com")
+    first_slug = SaveNewUrl.new("yes.com").save
+    second_slug = SaveNewUrl.new("yes.com").save
     expect(second_slug).to eql(first_slug)
+  end
+
+  it "prepends a url-scheme to the url if missing" do
+    slug = SaveNewUrl.new("yes.com").save
+    expect(Connection::DB[:short_urls].first(slug: slug)[:destination]).to eql("http://yes.com")
   end
 end

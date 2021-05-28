@@ -1,51 +1,47 @@
 import React from 'react';
 import './App.css';
+import { getSlug } from './api';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-	}
-
-	go = async () => {
-    const response = await fetch(
-      "http://localhost:4567",
-      {
-        method: 'PUT',
-        mode: 'no-cors'
-      }
-    )
-    //const json = await response.json()
-    debugger
-	}
+  }
 
   handleSubmit = async (e) => {
     e.preventDefault()
-    const response = await fetch(
-      "http://localhost:4567",
-      {
-        method: 'PUT',
-        body: JSON.stringify({destination: this.state.destination})
-      }
-    )
-    this.setState({returnedSlug: response.headers.get("Content-Location")})
+    this.setState({errorMessage: null})
+    const response = await getSlug(this.state.destination)
+    if(response.ok) {
+      this.setState({returnedSlug: response.headers.get("Content-Location")})
+    } else {
+      const errorMessage = await response.text()
+      this.setState({errorMessage: errorMessage})
+    }
+
   }
 
   render() {
     return (
       <div>
-        <h1>Hello, world!</h1>
-        <span>{this.state.destination}</span>
-        <span>{this.state.returnedSlug}</span>
+        <div className='instructions'>
+          <span>Please Enter the desired URL</span>
+        </div>
+        {this.state.errorMessage &&
+          <span>{this.state.errorMessage}</span>
+        }
+        <a href={this.state.returnedSlug}>{this.state.returnedSlug}</a>
 
-        <form onSubmit={this.handleSubmit}>
-          <input
-            type='text'
-            name='target_url'
-            onChange={e => this.setState({destination: e.target.value})}
-          />
-          <button type="submit">Submit</button>
-        </form>
+        <div className='form_wrapper'>
+          <form onSubmit={this.handleSubmit}>
+            <input
+              type='text'
+              name='target_url'
+              onChange={e => this.setState({destination: e.target.value})}
+            />
+            <button type="submit">Submit</button>
+          </form>
+        </div>
       </div>
     );
   }

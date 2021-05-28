@@ -7,5 +7,6 @@ WORKDIR /usr/src/app
 # make app files visible during build time
 COPY . /usr/src/app/
 
+RUN bundle config set --local without 'test'
 RUN bundle install
 

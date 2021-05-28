@@ -19,10 +19,10 @@ services:
       -  ./services/frontend/url-shortener-frontend:/app
     ports:
       - 3001:3000
-        #env_file:
-        #  - ./.env.dev
-        #depends_on:
-        #  - db
+    env_file:
+      - ./.frontend_env.dev
+    depends_on:
+      - api
   test:
     build: ./services/api
     command: ruby ./project/do_migrations.rb
