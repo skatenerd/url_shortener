@@ -1,3 +1,3 @@
 ruby project/do_migrations.rb
 
-ruby project/server.rb
+ruby project/app/server.rb
