@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./services/api
+    command: /bin/sh migrate_and_start.sh
+    volumes:
+      - ./services/api/:/usr/src/app/
+    ports:
+      - 4567:4567
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+  frontend:
+    build: ./services/frontend
+    command: ["npm", "start"]
+    volumes:
+      -  ./services/frontend/url-shortener-frontend:/app
+    ports:
+      - 3001:3000
+        #env_file:
+        #  - ./.env.dev
+        #depends_on:
+        #  - db
+  test:
+    build: ./services/api
+    command: ruby ./project/do_migrations.rb
+    volumes:
+      - ./services/api/:/usr/src/app/
+    env_file:
+      - ./.env.test
+    depends_on:
+      - test_db
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=stord_postgres
+      - POSTGRES_PASSWORD=stord_postgres
+      - POSTGRES_DB=stord_postgres_dev
+  test_db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=stord_postgres
+      - POSTGRES_PASSWORD=stord_postgres
+      - POSTGRES_DB=stord_postgres_test
+
+volumes:
+  postgres_data:
+  postgres_test_data:
