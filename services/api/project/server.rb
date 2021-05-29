@@ -10,7 +10,7 @@ use Rack::Throttle::Minute, :max => 60
 set :bind, '0.0.0.0'
 
 get '/:slug' do
-  response.headers['Access-Control-Allow-Origin'] = 'localhost'
+  set_cors_headers
   DB = Sequel.connect(ENV['DB_URL'])
   short_urls = DB[:short_urls] # Create a dataset
   found = short_urls.first(slug: params['slug'])
@@ -27,7 +27,7 @@ put '/' do
   target_url = json_params['destination']
   begin
     slug = SaveNewUrl.new(target_url).save
-    response.headers['Content-Location'] = "http://localhost:4567/#{slug}"
+    response.headers['Content-Location'] = "#{ENV['SERVER_URL']}/#{slug}"
     status 200
   rescue SaveNewUrl::InvalidURL
     status 422
