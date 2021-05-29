@@ -30,7 +30,7 @@ test('renders instructions', () => {
 
 test('it gets a url from the backend and shows it to the user', async () => {
   render(<App />);
-  const input = screen.getByLabelText("URL")
+  const input = screen.getByLabelText("Where do you want to go?")
   const submitButton = screen.getByRole('button')
   fireEvent.change(input, {
     target: {value: 'happypath.com'},
@@ -48,7 +48,7 @@ test('it displays the server error message to the user', async () => {
     }),
   )
   render(<App />);
-  const input = screen.getByLabelText("URL")
+  const input = screen.getByLabelText("Where do you want to go?")
   const submitButton = screen.getByRole('button')
   fireEvent.change(input, {
     target: {value: 'makecrash.com'},
@@ -74,12 +74,12 @@ test('it clears the server error message on a successful request', async () => {
   render(<App />);
 
 
-  fireEvent.change(screen.getByLabelText("URL"), {
+  fireEvent.change(screen.getByLabelText("Where do you want to go?"), {
     target: {value: 'makecrash.com'},
   })
   fireEvent.click(screen.getByRole('button'))
   await screen.findByTestId('error_message')
-  fireEvent.change(screen.getByLabelText("URL"), {
+  fireEvent.change(screen.getByLabelText("Where do you want to go?"), {
     target: {value: 'happypath.com'},
   })
   fireEvent.click(screen.getByRole('button'))
@@ -101,12 +101,12 @@ test('it clears the displayed URL on a bad request', async () => {
     }),
   )
   render(<App />);
-  fireEvent.change(screen.getByLabelText("URL"), {
+  fireEvent.change(screen.getByLabelText("Where do you want to go?"), {
     target: {value: 'happypath.com'},
   })
   fireEvent.click(screen.getByRole('button'))
   await screen.findByTestId('short_url')
-  fireEvent.change(screen.getByLabelText("URL"), {
+  fireEvent.change(screen.getByLabelText("Where do you want to go?"), {
     target: {value: 'makecrash.com'},
   })
   fireEvent.click(screen.getByRole('button'))
