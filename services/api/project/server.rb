@@ -3,10 +3,17 @@ require 'sinatra'
 require 'lib/save_new_url'
 require 'rack/throttle'
 
+
 class Application < Sinatra::Base
-  use Rack::Throttle::Minute, :max => 60
+  if ['staging', 'production'].include?(ENV['APP_ENV'])
+    use(
+      Rack::Throttle::Minute,
+      max: 100
+    )
+  end
   # get sinatra to look at localhost
   set :bind, '0.0.0.0'
+
   get '/:slug' do
     set_cors_headers
     DB = Sequel.connect(ENV['DB_URL'])
@@ -47,4 +54,6 @@ class Application < Sinatra::Base
       response.headers['Access-Control-Allow-Methods'] = 'GET,PUT,OPTIONS'
     end
   end
+
+  run! if app_file == $0
 end
