@@ -36,6 +36,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
+        <img className='header_image' src="https://d33wubrfki0l68.cloudfront.net/64fa75c900bedd247c246a68d5b2ed97b69c671e/458bf/logo-blue.png"/>
         <div className='instructions'>
           <span>Please Enter the desired URL</span>
         </div>
