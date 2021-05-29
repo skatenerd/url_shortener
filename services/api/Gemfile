@@ -5,6 +5,7 @@ gem 'puma'
 gem 'sequel'
 gem 'sequel_pg'
 gem 'rack-throttle'
+gem 'public_suffix'
 
 group :test do
   gem 'rspec'

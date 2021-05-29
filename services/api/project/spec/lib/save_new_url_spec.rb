@@ -10,11 +10,17 @@ describe SaveNewUrl do
     expect {
       SaveNewUrl.new("http://yes.com").save
     }.to change {
-    Connection::DB[:short_urls].count
+      Connection::DB[:short_urls].count
     }.from(0).to(1)
 
     saved = Connection::DB[:short_urls].order(:id).last
     expect(saved[:destination]).to eql("http://yes.com")
+  end
+
+  it "complains on nonsense url" do
+    expect {
+      SaveNewUrl.new("nonsenseurl").save
+    }.to raise_error(SaveNewUrl::InvalidURL)
   end
 
   it "does nothing if the url has already been saved" do

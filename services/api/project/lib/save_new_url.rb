@@ -3,6 +3,7 @@ $:.unshift File.dirname(__FILE__)
 require 'connection'
 require 'generate_slug'
 require 'sequel'
+require 'public_suffix'
 
 class SaveNewUrl
   class InvalidURL < ArgumentError
@@ -17,7 +18,7 @@ class SaveNewUrl
   end
 
   def save(tries=10)
-    unless preprocessed_url =~ URI::regexp
+    unless valid_url?
       raise InvalidURL
     end
 
@@ -44,6 +45,20 @@ class SaveNewUrl
 
   def lookup_slug_by_url
     Connection::DB[:short_urls].first(destination: preprocessed_url)&.dig(:slug)
+  end
+
+  def valid_url?
+    begin
+      PublicSuffix.parse(url_no_scheme)
+      true
+    rescue PublicSuffix::Error => e
+      false
+    end
+  end
+
+  def url_no_scheme
+    parsed = URI.parse(@url)
+    (parsed.host || '') + (parsed.path || '')
   end
 
 
