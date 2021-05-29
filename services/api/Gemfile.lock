@@ -11,6 +11,8 @@ GEM
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
+    rack-test (1.1.0)
+      rack (>= 1.0, < 3)
     rack-throttle (0.7.0)
       bundler (>= 1.0.0)
       rack (>= 1.0.0)
@@ -44,6 +46,7 @@ PLATFORMS
 
 DEPENDENCIES
   puma
+  rack-test
   rack-throttle
   rspec
   sequel
