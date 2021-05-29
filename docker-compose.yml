@@ -24,7 +24,9 @@ services:
     depends_on:
       - api
   test:
-    build: ./services/api
+    build:
+      context: ./services/
+      dockerfile: ./test/Dockerfile
     command: ruby ./project/do_migrations.rb
     volumes:
       - ./services/api/:/usr/src/app/

@@ -5,7 +5,7 @@ FROM ruby:3.0.1-buster
 WORKDIR /usr/src/app
 
 # copy project
-COPY ../web /usr/src/app/
+COPY ./api /usr/src/app/
 
 RUN bundle install
 
