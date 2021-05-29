@@ -7,6 +7,8 @@ WORKDIR /usr/src/app
 # make app files visible during build time
 COPY . /usr/src/app/
 
+RUN chmod +x ./wait-for-it.sh
+
 RUN bundle config set --local without 'test'
 RUN bundle install
 

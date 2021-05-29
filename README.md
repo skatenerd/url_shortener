@@ -1,7 +1,7 @@
 # Setup
 `docker-compose up`
 Visit:
-`localhost;3001`
+`localhost:81`
 
 On changes to the API code, just run:
 `docker-compose restart api`
