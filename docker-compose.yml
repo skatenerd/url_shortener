@@ -6,8 +6,8 @@ services:
     command: /bin/sh migrate_and_start.sh
     volumes:
       - ./services/api/:/usr/src/app/
-    ports:
-      - 4567:4567
+    expose:
+      - 4567
     env_file:
       - ./.env.dev
     depends_on:
@@ -17,12 +17,19 @@ services:
     command: ["npm", "start"]
     volumes:
       -  ./services/frontend/url-shortener-frontend:/app
-    ports:
-      - 3001:3000
+    expose:
+      - 3000
     env_file:
       - ./.frontend_env.dev
     depends_on:
       - api
+  nginx:
+    build: ./services/nginx
+    ports:
+      - 81:81
+    depends_on:
+      - frontend
+    command: ["nginx", "-g", "daemon off;"]
   test:
     build:
       context: ./services/

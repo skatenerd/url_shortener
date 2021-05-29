@@ -13,7 +13,7 @@ describe Application do
   end
 
   it "returns a short-url for a URL" do
-    creation_response = put('/', {destination: 'www.google.com'}.to_json, { 'CONTENT_TYPE' => 'application/json' })
+    creation_response = put('/redirects', {destination: 'www.google.com'}.to_json, { 'CONTENT_TYPE' => 'application/json' })
     short_url = creation_response.headers['Content-Location']
     redirect_for_slug_response = get(URI.parse(short_url).path)
     expect(redirect_for_slug_response.headers['Location']).to eql('http://www.google.com')

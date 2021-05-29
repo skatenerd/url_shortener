@@ -14,8 +14,7 @@ class Application < Sinatra::Base
   # get sinatra to look at localhost
   set :bind, '0.0.0.0'
 
-  get '/:slug' do
-    set_cors_headers
+  get '/redirects/:slug' do
     DB = Sequel.connect(ENV['DB_URL'])
     short_urls = DB[:short_urls] # Create a dataset
     found = short_urls.first(slug: params['slug'])
@@ -23,16 +22,14 @@ class Application < Sinatra::Base
     status 301
   end
 
-  options '/' do
-    set_cors_headers
+  options '/redirects' do
   end
 
-  put '/' do
-    set_cors_headers
+  put '/redirects' do
     target_url = json_params['destination']
     begin
       slug = SaveNewUrl.new(target_url).save
-      response.headers['Content-Location'] = "#{ENV['SERVER_URL']}/#{slug}"
+      response.headers['Content-Location'] = "#{ENV['SERVER_URL']}/redirects/#{slug}"
       status 200
     rescue SaveNewUrl::InvalidURL
       status 422
@@ -45,14 +42,6 @@ class Application < Sinatra::Base
 
   def json_params
     JSON.parse(request.body.read)
-  end
-
-  def set_cors_headers
-    if ENV['APP_ENV'] == 'development'
-      response.headers['Access-Control-Allow-Origin'] = '*'
-      response.headers['Access-Control-Expose-Headers'] = 'Content-Location'
-      response.headers['Access-Control-Allow-Methods'] = 'GET,PUT,OPTIONS'
-    end
   end
 
   run! if app_file == $0
