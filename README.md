@@ -29,5 +29,5 @@ That would be a bit of a pain to set up, and the tradeoff doesn't make sense yet
 
 # Why nginx?
 
-To solve the gross CORS code I had to write.
+To solve the gross CORS code I had to write.  You might find it a bit confusing that nginx is forwarding frontend requests to another server, rather than serving up assets directly.  You're right, this is a bit weird.  The point is to do the bare minimum of work so I could get rid of any CORS-awareness in the API backend.  I don't think it makes sense to put more work in here, since I'd start making a bunch of assumptions about a theoretical deploy process.
 
