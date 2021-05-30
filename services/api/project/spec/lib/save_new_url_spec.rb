@@ -23,6 +23,15 @@ describe SaveNewUrl do
     }.to raise_error(SaveNewUrl::InvalidURL)
   end
 
+  it "raises UnknownError if it runs out of attempts making random slugs" do
+    Connection::DB[:short_urls].insert({destination: "some other url", slug: "crash"})
+    slug_generator = double(:slug_generator)
+    allow(slug_generator).to receive(:for_record_count) { "crash" }
+    expect {
+      SaveNewUrl.new("http://www.itwillcrash.org", slug_generator).save
+    }.to raise_error(SaveNewUrl::UnknownError)
+  end
+
   it "does nothing if the url has already been saved" do
     SaveNewUrl.new("yes.com").save
     expect {
