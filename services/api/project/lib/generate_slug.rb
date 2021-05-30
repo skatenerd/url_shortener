@@ -1,17 +1,17 @@
 require 'securerandom'
 class GenerateSlug
   def for_record_count(record_count)
-   gen_random_string_with_length(length_for_record_count(record_count))
+   gen_random_string_with_bytes(bytes_for_record_count(record_count))
 
   end
 
   private
 
-  def gen_random_string_with_length(length)
-    SecureRandom.urlsafe_base64(length)[...length]
+  def gen_random_string_with_bytes(bytes)
+    SecureRandom.urlsafe_base64(bytes)
   end
 
-  def length_for_record_count(record_count)
-    [4, Math.log([record_count, 1].max, 64).to_i + 3].max
+  def bytes_for_record_count(record_count)
+    [3, Math.log([record_count, 1].max, 256).to_i + 2].max
   end
 end
